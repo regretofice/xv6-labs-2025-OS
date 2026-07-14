@@ -5,8 +5,8 @@
 int main(int argc, char** argv) {
   if (argc != 2) {
     printf("usage: sleep <time>\n");
-    return 1;
+    exit(1);
   }
   pause(atoi(argv[1]));
-  return 0;
+  exit(0);
 }
