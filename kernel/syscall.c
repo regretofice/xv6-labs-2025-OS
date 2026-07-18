@@ -116,18 +116,13 @@ void syscall(void) {
     } else if (num == SYS_open || num == SYS_exec) {
       // 特殊情况1:open与exec不允许，但是有可能路径允许
       char path[MAXPATH];
-      if (argstr(0, path, MAXPATH) < 0) {
-        // 如果没传递参数
-        p->trapframe->a0 = -1;
-        return;
-      }
-      uint32 len = strlen(p->allow_path);
-      if (len > 0 && strncmp(p->allow_path, path, len) == 0) {
+      if (argstr(0, path, MAXPATH) >= 0 &&
+          strncmp(path, p->allow_path, MAXPATH) == 0) {
         // 路径允许
         p->trapframe->a0 = syscalls[num]();
         return;
       }
-      // 否则路径不允许
+      // 否则路径不存在/不允许
       p->trapframe->a0 = -1;
       return;
     } else {  // 如果被禁用，直接返回-1表示调用被拒绝
