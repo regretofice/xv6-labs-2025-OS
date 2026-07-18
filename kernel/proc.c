@@ -254,8 +254,9 @@ int kfork(void) {
     if (p->ofile[i]) np->ofile[i] = filedup(p->ofile[i]);
   np->cwd = idup(p->cwd);
 
-  // 顺便复制掩码
+  // 复制掩码,与允许的路径
   np->mask = p->mask;
+  safestrcpy(np->allow_path, p->allow_path, MAXPATH);
 
   safestrcpy(np->name, p->name, sizeof(p->name));
 

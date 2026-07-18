@@ -88,5 +88,9 @@ uint64 sys_interpose(void) {
   argint(0, &mask);           // 从用户态获取第一个参数 (mask)
   struct proc* p = myproc();  // 获取当前进程的proc结构体
   p->mask = mask;             // 更新当前proc的mask
+
+  if (argstr(1, p->allow_path, MAXPATH) < 0)
+    return -1;  // 从用户态获取第二个参数 (allow_path)
+
   return 0;
 }
