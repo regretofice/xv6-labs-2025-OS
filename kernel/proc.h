@@ -104,6 +104,6 @@ struct proc {
   struct file* ofile[NOFILE];   // Open files
   struct inode* cwd;            // Current directory
   char name[16];                // Process name (debugging)
-  int mask;
-  char allow_path[MAXPATH];
+  int mask;                     // sandbox interpose mask
+  char allow_path[MAXPATH];     // sandbox allow path
 };
