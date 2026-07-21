@@ -118,14 +118,14 @@ found:
   }
 
   // 获取一个usyscall指针
-  if ((p->syscall = (struct usyscall*)kalloc()) == 0) {
+  if ((p->usyscall = (struct usyscall*)kalloc()) == 0) {
     freeproc(p);
     release(&p->lock);
     return 0;
   }
 
   // 将pid信息存储到syscall结构体中
-  p->syscall->pid = p->pid;
+  p->usyscall->pid = p->pid;
 
   // An empty user page table.
   p->pagetable = proc_pagetable(p);
@@ -151,8 +151,8 @@ static void freeproc(struct proc* p) {
   if (p->trapframe) kfree((void*)p->trapframe);
   p->trapframe = 0;
   // 释放掉syscall占用的资源
-  if (p->syscall) kfree((void*)p->syscall);
-  p->syscall = 0;
+  if (p->usyscall) kfree((void*)p->usyscall);
+  p->usyscall = 0;
   if (p->pagetable) proc_freepagetable(p->pagetable, p->sz);
   p->pagetable = 0;
   p->sz = 0;
@@ -193,7 +193,7 @@ pagetable_t proc_pagetable(struct proc* p) {
     return 0;
   }
   // 为usyscall设置映射关系,如果失败，需要释放前面设置的两个映射关系
-  if (mappages(pagetable, USYSCALL, PGSIZE, (uint64)(p->syscall),
+  if (mappages(pagetable, USYSCALL, PGSIZE, (uint64)(p->usyscall),
                PTE_R | PTE_U) < 0) {
     uvmunmap(pagetable, TRAMPOLINE, 1, 0);
     uvmunmap(pagetable, TRAPFRAME, 1, 0);
